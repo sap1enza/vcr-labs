@@ -1,7 +1,8 @@
 class TestApi
 
-  def initialize(endpoint)
+  def initialize(endpoint, request_body)
     @endpoint = endpoint
+    @request_body = request_body
   end
 
   def call
@@ -13,18 +14,20 @@ class TestApi
   end
 
   def success?
-    completed? && @response_request.status == 200
+    completed? && @response_request.status == 201
   end
 
   private
 
-  attr_reader :endpoint
+  attr_reader :endpoint, :request_body
 
   def post
     @response_request = nil
 
-    @response_request = client.get do |request|
+    @response_request = client.post do |request|
       request.url endpoint
+
+      request.body = request_body.to_json
     end
   end
 
